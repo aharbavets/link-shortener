@@ -17,7 +17,8 @@ class CreateLinksTable extends Migration
             $table->id();
             $table->timestamps();
             $table->string('original_url');
-            $table->string('uuid');
+            $table->string('code');
+            $table->integer('visit_count');
         });
     }
 
