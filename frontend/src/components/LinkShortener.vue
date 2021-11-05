@@ -4,7 +4,7 @@
     <div class="content">
       <h1 class="display-4">Link Shortener</h1>
 
-      <form v-if="!shortened" @submit.stop="shorten">
+      <form v-if="!shortened" @submit.stop.prevent="shorten">
         <div class="form-group" >
           <label for="original_link">Enter your long link here</label>
           <div class="input-group mb-3">
@@ -67,15 +67,16 @@ export default {
       let response;
 
       try {
-        response = await fetch({
-          url: 'http://localhost:8000/link/shorten',
+        response = await fetch('//localhost:8000/api/link/shorten', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
+          mode: 'cors',
           body: JSON.stringify({url: this.originalLink})
         });
       } catch (e) {
+        alert(e.message)
         this.processing = false
         return
       }
@@ -86,7 +87,11 @@ export default {
         return
       }
 
-      const json = response.json()
+      console.log(response)
+
+      const json = await response.json()
+
+      console.log(json)
 
       this.shortLink = json.result
       this.originalLink = ''
