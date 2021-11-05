@@ -32,7 +32,7 @@
         <div class="input-group mb-3">
           <input readonly type="url" class="form-control" aria-describedby="original_link" v-model="shortLink">
           <div class="input-group-append">
-            <button type="submit" class="btn btn-primary">Copy</button>
+            <button type="submit" class="btn btn-primary" @click="copyToClipboard">Copy</button>
           </div>
         </div>
 
@@ -44,6 +44,8 @@
 </template>
 
 <script>
+import copy from "copy-to-clipboard";
+
 export default {
   name: 'LinkShortener',
   props: {
@@ -57,6 +59,10 @@ export default {
     }
   },
   methods: {
+    copyToClipboard() {
+      copy(this.shortLink)
+    },
+
     async shorten() {
       if (this.processing) {
         return
