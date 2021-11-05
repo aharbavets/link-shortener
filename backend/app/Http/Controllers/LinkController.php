@@ -30,4 +30,13 @@ class LinkController extends Controller
         ]);
     }
 
+    function redirect($code) {
+        $link = Link::where("code", "=", $code)->firstOrFail();
+
+        $link->visit_count++;
+        $link->save();
+
+        return redirect($link->original_url);
+    }
+
 }
