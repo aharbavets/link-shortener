@@ -8,9 +8,17 @@
         <div class="form-group" >
           <label for="original_link">Enter your long link here</label>
           <div class="input-group mb-3">
-            <input required type="url" class="form-control" v-model="originalLink"  id="original_link" aria-describedby="original_link" placeholder="Your link">
+            <input
+                required
+                type="url"
+                class="form-control"
+                v-model="originalLink"
+                id="original_link"
+                aria-describedby="original_link" placeholder="Your link"
+                :disabled="processing"
+            />
             <div class="input-group-append">
-              <button type="submit" class="btn btn-primary">Shorten</button>
+              <button type="submit" class="btn btn-primary" :disabled="processing">Shorten</button>
             </div>
           </div>
         </div>
@@ -22,7 +30,7 @@
         </div>
 
         <div class="input-group mb-3">
-          <input readonly type="url" class="form-control" aria-describedby="original_link">
+          <input readonly type="url" class="form-control" aria-describedby="original_link" v-model="shortLink">
           <div class="input-group-append">
             <button type="submit" class="btn btn-primary">Copy</button>
           </div>
@@ -43,13 +51,44 @@ export default {
   data() {
     return {
       shortened: false,
-      originalLink: ''
+      processing: false,
+      originalLink: '',
+      shortLink: '',
     }
   },
   methods: {
-    shorten() {
-      // todo actually shorten the link
+    async shorten() {
+      if (this.processing) {
+        return
+      }
 
+      this.processing = true
+
+      let response;
+
+      try {
+        response = await fetch({
+          url: 'http://localhost:8000/link/shorten',
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({url: this.originalLink})
+        });
+      } catch (e) {
+        this.processing = false
+        return
+      }
+
+      this.processing = false
+
+      if (response.status !== 200) {
+        return
+      }
+
+      const json = response.json()
+
+      this.shortLink = json.result
       this.originalLink = ''
       this.shortened = true
     },
