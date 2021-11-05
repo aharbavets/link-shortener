@@ -1,4 +1,5 @@
-# link-shortener
+Link Shortener
+==============
 
 ## Project setup
 ```
